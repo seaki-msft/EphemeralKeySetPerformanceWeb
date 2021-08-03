@@ -45,7 +45,7 @@ namespace EphemeralPerformanceWeb.Controllers
             var result1 = CheckDecryptPerformance(bytes, useEphemeral: false, useNewDecryption: true);
             var result2 = CheckDecryptPerformance(bytes, useEphemeral: true, useNewDecryption: true);
             var result3 = CheckDecryptPerformance(bytes, useEphemeral: true, useNewDecryption: true, cachePrivateKey: true);
-            return result + "\n " + result1 + "\n " + result2 + "\n " + result3;
+            return string.Join("\n ", new string[] { result, result1, result2, result3 });
         }
 
         private static string CheckDecryptPerformance(byte[] certBytes, bool useEphemeral, bool useNewDecryption, bool cachePrivateKey = false)
@@ -59,7 +59,6 @@ namespace EphemeralPerformanceWeb.Controllers
             for (var idx = 0; idx < 2000; idx++)
             {
                 DecryptData(cert, useNewDecryption, cachePrivateKey);
-                //DecryptData1(_cachedPrivateKey, useNewDecryption);
             }
             sw.Stop();
             var message = $"useEphemeral={useEphemeral}, useNewDecryption={useNewDecryption}, cachePrivateKey={cachePrivateKey}, Elapsed={sw.Elapsed}";
@@ -79,16 +78,6 @@ namespace EphemeralPerformanceWeb.Controllers
             else
             {
                 byte[] rgbKey = ((RSACryptoServiceProvider)cert.PrivateKey).Decrypt(encrypted, true);
-            }
-        }
-
-        private static void DecryptData1(RSA privateKey, bool useNewDecryption)
-        {
-            byte[] encrypted = Convert.FromBase64String("SEAXxi6efQwjuTK9sYnZsyAieWi4QdnEUw1STTpRzBRpdSlqsNUGLRIg6VT7qtONeOZ52nNCjKVygj9HO9mctW/kSfoFnAZUITC9wg1B6NWPKk88kUT+HL6vI6th55LlqC4+clGqFrUm8CkqYknTF4w/W7ZrPqcRQ21IvLI1o3ESZ1TCRyK3fax58DHzpddbs4MdzjUmYlWGMW8i/BzMr1juBwcTMM9M8D+P5E4cboSsMiKh6ikPCBjEc4w472gqLtQLD/c1n39ERFOcmBf3HB7UVh/HOT5tE0ZX0hm2VFj1VChPEossXNB56AY0g4sNGWi1TxxYOaMrbDwtNsCZqQ==");
-
-            if (useNewDecryption)
-            {
-                byte[] rgbKey = privateKey.Decrypt(encrypted, RSAEncryptionPadding.OaepSHA1);
             }
         }
 
